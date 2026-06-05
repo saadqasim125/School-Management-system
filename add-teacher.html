@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Add Teacher</title>
+
+<style>
+:root{
+  --primary:#1E40AF;
+  --primary-hover:#2563EB;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#1F2937;
+  --border:#E5E7EB;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI;}
+
+body{background:var(--bg);padding:25px;}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+h1{color:var(--text);}
+
+.btn{
+  background:#1F2937;
+  color:white;
+  padding:10px 14px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.primary{
+  background:var(--primary);
+}
+
+.primary:hover{
+  background:var(--primary-hover);
+}
+
+.card{
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.group{
+  display:flex;
+  flex-direction:column;
+}
+
+label{
+  font-weight:600;
+  margin-bottom:6px;
+}
+
+input,select,textarea{
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:8px;
+}
+
+.full{grid-column:1/-1;}
+
+@media(max-width:768px){
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+<h1>Add Teacher</h1>
+
+<button class="btn primary"
+onclick="window.location.href='view-teachers.html'">
+View Teachers
+</button>
+</div>
+
+<div class="card">
+
+<form id="teacherForm">
+
+<div class="grid">
+
+<div class="group">
+<label>Name</label>
+<input id="name" required>
+</div>
+
+<div class="group">
+<label>Email</label>
+<input id="email" type="email">
+</div>
+
+<div class="group">
+<label>Phone</label>
+<input id="phone">
+</div>
+
+<div class="group">
+<label>Gender</label>
+<select id="gender">
+<option>Male</option>
+<option>Female</option>
+</select>
+</div>
+
+<div class="group">
+<label>Subject</label>
+<input id="subject">
+</div>
+
+<div class="group">
+<label>Status</label>
+<select id="status">
+<option>Active</option>
+<option>Inactive</option>
+</select>
+</div>
+
+<div class="group full">
+<label>Address</label>
+<textarea id="address"></textarea>
+</div>
+
+<div class="group">
+<label>Photo (Optional)</label>
+<input type="file" id="photo">
+</div>
+
+</div>
+
+<br>
+
+<button class="btn primary" type="submit">
+Save Teacher
+</button>
+
+</form>
+
+</div>
+
+<script src="teachers.js"></script>
+
+</body>
+</html>
