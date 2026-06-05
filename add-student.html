@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Student</title>
+
+<style>
+:root{
+  --primary:#1E40AF;
+  --primary-hover:#2563EB;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#1F2937;
+  --border:#E5E7EB;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI;}
+
+body{background:var(--bg);padding:25px;}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+h1{color:var(--text);}
+
+.btn{
+  padding:12px 16px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.view-btn{
+  background:var(--primary);
+  color:white;
+}
+
+.view-btn:hover{
+  background:var(--primary-hover);
+}
+
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.group{display:flex;flex-direction:column;}
+
+label{margin-bottom:6px;font-weight:600;}
+
+input,select{
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+}
+
+.save{
+  margin-top:20px;
+  width:100%;
+  background:var(--primary);
+  color:white;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.save:hover{background:var(--primary-hover);}
+
+@media(max-width:768px){
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1>Add Student</h1>
+
+<button class="btn view-btn"
+onclick="window.location.href='view-student.html'">
+View Student
+</button>
+</div>
+
+<div class="card">
+
+<form id="form">
+
+<div class="grid">
+
+<div class="group">
+<label>Student Name</label>
+<input id="name" required>
+</div>
+
+<div class="group">
+<label>Class</label>
+<select id="class">
+<option>1</option><option>2</option><option>3</option>
+<option>4</option><option>5</option><option>6</option>
+<option>7</option><option>8</option><option>9</option><option>10</option>
+</select>
+</div>
+
+<div class="group">
+<label>Section</label>
+<select id="section">
+<option>A</option><option>B</option><option>C</option><option>D</option>
+</select>
+</div>
+
+<div class="group">
+<label>Phone</label>
+<input id="phone">
+</div>
+
+<div class="group">
+<label>Email</label>
+<input id="email" type="email">
+</div>
+
+<div class="group">
+<label>Status</label>
+<select id="status">
+<option>Active</option>
+<option>Inactive</option>
+</select>
+</div>
+
+</div>
+
+<button class="save" type="submit">Save Student</button>
+
+</form>
+
+</div>
+
+<script>
+document.getElementById("form").addEventListener("submit",function(e){
+e.preventDefault();
+
+let students = JSON.parse(localStorage.getItem("students")) || [];
+
+// safe auto roll number
+let newRoll = students.length > 0
+? Math.max(...students.map(s => s.rollNo)) + 1
+: 1;
+
+let student = {
+id: Date.now(),
+rollNo: newRoll,
+name: document.getElementById("name").value,
+className: document.getElementById("class").value,
+section: document.getElementById("section").value,
+phone: document.getElementById("phone").value,
+email: document.getElementById("email").value,
+status: document.getElementById("status").value
+};
+
+students.push(student);
+
+localStorage.setItem("students", JSON.stringify(students));
+
+alert("Student Saved Successfully");
+
+window.location.href = "view-student.html";
+});
+</script>
+
+</body>
+</html>

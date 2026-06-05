@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>View student</title>
+
+<style>
+:root{
+  --primary:#1E40AF;
+  --primary-hover:#2563EB;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#1F2937;
+  --border:#E5E7EB;
+  --danger:#EF4444;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI;}
+
+body{background:var(--bg);padding:25px;}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+h1{color:var(--text);}
+
+.btn{
+  padding:12px 16px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.add-btn{
+  background:var(--primary);
+  color:white;
+}
+
+.add-btn:hover{background:var(--primary-hover);}
+
+.search{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin-bottom:15px;
+}
+
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th{
+  background:var(--primary);
+  color:white;
+  padding:12px;
+  text-align:left;
+}
+
+td{
+  padding:12px;
+  border-bottom:1px solid var(--border);
+}
+
+.del{
+  background:var(--danger);
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1>View student</h1>
+
+<button class="btn add-btn"
+onclick="window.location.href='add-student.html'">
+Add Student
+</button>
+</div>
+
+<input class="search" id="search" placeholder="Search student...">
+
+<div class="card">
+
+<table>
+<thead>
+<tr>
+<th>Roll</th>
+<th>Name</th>
+<th>Class</th>
+<th>Section</th>
+<th>Phone</th>
+<th>Email</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="body"></tbody>
+</table>
+
+</div>
+
+<script>
+
+function render(data){
+let body = document.getElementById("body");
+body.innerHTML="";
+
+data.forEach(s=>{
+body.innerHTML += `
+<tr>
+<td>${s.rollNo}</td>
+<td>${s.name}</td>
+<td>${s.className}</td>
+<td>${s.section}</td>
+<td>${s.phone}</td>
+<td>${s.email}</td>
+<td>${s.status}</td>
+<td>
+<button class="del" onclick="del(${s.id})">Delete</button>
+</td>
+</tr>`;
+});
+}
+
+function load(){
+let students = JSON.parse(localStorage.getItem("students")) || [];
+render(students);
+}
+
+function del(id){
+let students = JSON.parse(localStorage.getItem("students")) || [];
+students = students.filter(s => s.id !== id);
+localStorage.setItem("students",JSON.stringify(students));
+load();
+}
+
+document.getElementById("search").addEventListener("input",function(){
+let students = JSON.parse(localStorage.getItem("students")) || [];
+let val = this.value.toLowerCase();
+
+let filtered = students.filter(s =>
+s.name.toLowerCase().includes(val) ||
+s.rollNo.toString().includes(val) ||
+s.className.toString().includes(val) ||
+s.phone.includes(val)
+);
+
+render(filtered);
+});
+
+load();
+
+</script>
+
+</body>
+</html>
