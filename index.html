@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School ERP Dashboard</title>
+
+<style>
+:root{
+  --primary:#1E40AF;
+  --primary-dark:#16348f;
+  --bg:#F4F6F9;
+  --muted:#6b7280;
+  --glow: rgba(30,64,175,0.25);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
+
+body{
+  display:flex;
+  height:100vh;
+  background:var(--bg);
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:260px;
+  background:linear-gradient(180deg, var(--primary), var(--primary-dark));
+  color:white;
+  display:flex;
+  flex-direction:column;
+  padding:18px 0;
+}
+
+.logo{
+  text-align:center;
+  font-size:18px;
+  font-weight:bold;
+  padding:18px;
+}
+
+.nav a{
+  display:block;
+  padding:12px 18px;
+  color:white;
+  text-decoration:none;
+  font-size:14px;
+  border-left:3px solid transparent;
+  transition:0.25s;
+}
+
+.nav a:hover{
+  background:rgba(255,255,255,0.12);
+  border-left:3px solid white;
+  padding-left:24px;
+}
+
+/* MAIN */
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  overflow:auto;
+}
+
+.topbar{
+  background:white;
+  padding:14px 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.badge{
+  background:var(--primary);
+  color:white;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:12px;
+}
+
+/* DASHBOARD GRID */
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:16px;
+  padding:20px;
+}
+
+/* PANEL */
+.panel{
+  background:white;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+
+.panel h3{
+  color:var(--primary);
+  margin-bottom:12px;
+}
+
+/* QUICK ACTIONS */
+.action-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+
+.action-btn{
+  display:block;
+  padding:12px;
+  background:var(--primary);
+  color:white;
+  text-decoration:none;
+  border-radius:10px;
+  font-size:13px;
+  text-align:center;
+  transition:0.25s;
+}
+
+.action-btn:hover{
+  background:var(--primary-dark);
+  transform:translateY(-3px);
+}
+
+/* LIVE FEED */
+.feed-item{
+  padding:10px;
+  border-left:3px solid var(--primary);
+  margin-bottom:10px;
+  font-size:13px;
+  color:var(--muted);
+  background:#f8fafc;
+  border-radius:8px;
+  transition:0.2s;
+}
+
+.feed-item:hover{
+  transform:translateX(5px);
+}
+
+/* MODULES */
+.modules{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:16px;
+  padding:20px;
+}
+
+.card{
+  background:white;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  border-left:4px solid var(--primary);
+}
+
+.card h4{
+  color:var(--primary);
+}
+
+.card p{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:6px;
+}
+
+/* FOOTER */
+.footer{
+  margin:20px;
+  background:linear-gradient(135deg,var(--primary),#2563eb);
+  color:white;
+  padding:14px;
+  border-radius:14px;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">SCHOOL ERP</div>
+
+  <div class="nav">
+    <a href="add-student.html">➕ Add Student</a>
+    <a href="view-student.html">📄 View Students</a>
+    <a href="add-teacher.html">👨‍🏫 Add Teacher</a>
+    <a href="view-teachers.html">📄 View Teachers</a>
+    <a href="add-attendance.html">📊 Student Attendance</a>
+    <a href="view-attendance.html">📈 View Attendance</a>
+    <a href="add-teacher-attendance.html">🧑‍🏫 Teacher Attendance</a>
+    <a href="view-teacher-attendance.html">📈 Teacher Attendance</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="topbar">
+    <div><b>Dashboard Control Center</b></div>
+    <div class="badge">Admin Mode</div>
+  </div>
+
+  <!-- MAIN DASHBOARD -->
+  <div class="dashboard-grid">
+
+    <!-- QUICK ACTIONS -->
+    <div class="panel">
+      <h3>⚡ Quick Actions</h3>
+
+      <div class="action-grid">
+        <a class="action-btn" href="add-student.html">➕ Add Student</a>
+        <a class="action-btn" href="add-teacher.html">👨‍🏫 Add Teacher</a>
+        <a class="action-btn" href="add-attendance.html">📊 Student Attendance</a>
+        <a class="action-btn" href="add-teacher-attendance.html">🧑‍🏫 Teacher Attendance</a>
+      </div>
+    </div>
+
+    <!-- LIVE FEED -->
+    <div class="panel">
+      <h3>📡 Live Activity</h3>
+
+      <div class="feed-item">🟢 New student added: Ali Khan</div>
+      <div class="feed-item">🟡 Teacher updated: Mr. Ahmed</div>
+      <div class="feed-item">🔵 Attendance marked for Class 10</div>
+      <div class="feed-item">🟣 System backup completed</div>
+    </div>
+
+  </div>
+
+  <!-- MODULES -->
+  <div class="modules">
+
+    <div class="card">
+      <h4>Student Management</h4>
+      <p>Add, update, and manage student records easily.</p>
+    </div>
+
+    <div class="card">
+      <h4>Teacher Management</h4>
+      <p>Manage teacher profiles and data.</p>
+    </div>
+
+    <div class="card">
+      <h4>Attendance System</h4>
+      <p>Track attendance with real system integration.</p>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    School ERP System Running Smoothly ⚡
+  </div>
+
+</div>
+
+</body>
+</html>

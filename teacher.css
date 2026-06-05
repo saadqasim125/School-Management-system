@@ -1,0 +1,68 @@
+body{
+margin:0;
+font-family:Segoe UI;
+display:flex;
+background:#F8FAFC;
+}
+
+.sidebar{
+width:220px;
+height:100vh;
+background:#0F172A;
+color:white;
+padding:20px;
+}
+
+.sidebar h2{
+margin-bottom:20px;
+}
+
+.sidebar ul{
+list-style:none;
+padding:0;
+}
+
+.sidebar li{
+padding:12px;
+margin-bottom:8px;
+cursor:pointer;
+border-radius:8px;
+}
+
+.sidebar li:hover,
+.sidebar .active{
+background:#1E40AF;
+}
+
+.main{
+padding:25px;
+flex:1;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+table{
+width:100%;
+margin-top:15px;
+border-collapse:collapse;
+}
+
+th{
+background:#1E40AF;
+color:white;
+padding:10px;
+}
+
+td{
+padding:10px;
+border-bottom:1px solid #ddd;
+}
+
+input,select{
+padding:8px;
+}

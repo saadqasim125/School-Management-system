@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Attendance</title>
+
+<link rel="stylesheet" href="css/attendance.css">
+</head>
+
+<body>
+
+<div class="header">
+<h1>Add Attendance</h1>
+
+<div>
+<button class="btn" onclick="window.location.href='view-attendance.html'">
+View Attendance
+</button>
+
+<button class="btn add-btn" onclick="window.location.href='view-student.html'">
+View Students
+</button>
+</div>
+</div>
+
+<div class="card">
+
+<div class="grid">
+
+<div class="group">
+<label>Class</label>
+<select id="classSelect" onchange="loadStudents()">
+<option value="">Select Class</option>
+<option>1</option><option>2</option><option>3</option>
+<option>4</option><option>5</option><option>6</option>
+<option>7</option><option>8</option><option>9</option><option>10</option>
+</select>
+</div>
+
+<div class="group">
+<label>Month</label>
+<select id="month">
+<option>January</option><option>February</option><option>March</option>
+<option>April</option><option>May</option><option>June</option>
+<option>July</option><option>August</option><option>September</option>
+<option>October</option><option>November</option><option>December</option>
+</select>
+</div>
+
+<div class="group full">
+<input id="search" placeholder="Search student..." oninput="loadStudents()">
+</div>
+
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Roll</th>
+<th>Name</th>
+<th>Present</th>
+<th>Absent</th>
+<th>Leave</th>
+</tr>
+</thead>
+
+<tbody id="body"></tbody>
+</table>
+
+<button class="save" onclick="saveAttendance()">Save Attendance</button>
+
+</div>
+
+<script src="js/attendance.js"></script>
+
+</body>
+</html>
