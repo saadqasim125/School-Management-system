@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Add Teacher Attendance</title>
+<title>Teacher Attendance</title>
 
 <style>
 :root{
@@ -13,11 +12,19 @@
   --border:#E5E7EB;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI;
+}
 
-body{background:var(--bg);padding:20px;}
+body{
+  background:var(--bg);
+  padding:20px;
+}
 
-.topbar{
+.header{
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -31,59 +38,63 @@ h1{color:var(--text);}
   color:white;
   padding:10px 14px;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   cursor:pointer;
 }
 
-.primary{background:var(--primary);}
+.primary{
+  background:var(--primary);
+}
 
 .card{
   background:white;
   padding:20px;
   border-radius:12px;
   box-shadow:0 2px 10px rgba(0,0,0,0.05);
-  margin-bottom:15px;
-}
-
-.search{
-  width:100%;
-  padding:12px;
-  border:2px solid var(--border);
-  border-radius:10px;
-  margin-bottom:15px;
 }
 
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:10px;
+  gap:15px;
+  margin-bottom:15px;
+}
+
+.group{
+  display:flex;
+  flex-direction:column;
+}
+
+.group.full{
+  grid-column:1/-1;
+}
+
+label{
+  font-weight:600;
+  margin-bottom:5px;
 }
 
 input{
-  padding:10px;
+  padding:12px;
   border:1px solid var(--border);
-  border-radius:8px;
+  border-radius:10px;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
+  margin-top:10px;
 }
 
 th{
   background:var(--primary);
   color:white;
-  padding:10px;
+  padding:12px;
 }
 
 td{
   padding:10px;
   border-bottom:1px solid var(--border);
-}
-
-.small{
-  width:80px;
   text-align:center;
 }
 
@@ -94,16 +105,20 @@ td{
   background:green;
   color:white;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   cursor:pointer;
+}
+
+.radio{
+  transform:scale(1.2);
 }
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
-<h1>Teacher Attendance</h1>
+<div class="header">
+<h1>Teacher Daily Attendance</h1>
 
 <button class="btn primary"
 onclick="window.location.href='view-teacher-attendance.html'">
@@ -111,96 +126,117 @@ View
 </button>
 </div>
 
-<!-- SEARCH -->
-<input class="search" id="search" placeholder="Search teacher...">
+<div class="card">
 
-<!-- MONTH / YEAR -->
-<div class="card grid">
-<input id="month" placeholder="Enter Month (e.g. January)">
-<input id="year" placeholder="Enter Year (e.g. 2026)">
+<div class="grid">
+
+<div class="group">
+<label>Date</label>
+<input type="date" id="date">
 </div>
 
-<!-- TABLE -->
-<div class="card">
+<div class="group full">
+<input id="search" placeholder="Search teacher..." oninput="renderTeachers()">
+</div>
+
+</div>
 
 <table>
 <thead>
 <tr>
-<th>Teacher</th>
+<th>Name</th>
 <th>Present</th>
 <th>Absent</th>
 <th>Leave</th>
 </tr>
 </thead>
 
-<tbody id="tbody"></tbody>
+<tbody id="body"></tbody>
 </table>
 
-<button class="save" onclick="saveAll()">Save Attendance</button>
+<button class="save" onclick="saveTeacherAttendance()">
+Save Attendance
+</button>
 
 </div>
 
 <script src="teachers.js"></script>
 
 <script>
+
 let teachers = getTeachers();
-let tbody = document.getElementById("tbody");
 
-function render(list){
-  tbody.innerHTML = "";
+// AUTO DATE
+window.onload = () => {
+  document.getElementById("date").value =
+    new Date().toISOString().split("T")[0];
 
-  list.forEach(t=>{
-    tbody.innerHTML += `
-    <tr>
-      <td>${t.name}</td>
-      <td><input class="small" id="p-${t.id}" value="0"></td>
-      <td><input class="small" id="a-${t.id}" value="0"></td>
-      <td><input class="small" id="l-${t.id}" value="0"></td>
-    </tr>`;
-  });
-}
+  renderTeachers();
+};
 
-render(teachers);
+// ==========================
+// LOAD TEACHERS (SAME STYLE AS STUDENTS)
+// ==========================
+function renderTeachers(){
 
-/* SEARCH */
-document.getElementById("search").addEventListener("input", function(e){
-  let value = e.target.value.toLowerCase();
+  let search = document.getElementById("search").value.toLowerCase();
+
   let filtered = teachers.filter(t =>
-    t.name.toLowerCase().includes(value)
+    t.name.toLowerCase().includes(search)
   );
-  render(filtered);
-});
 
-/* SAVE */
-function getAttendance(){
-  return JSON.parse(localStorage.getItem("teacherMonthly")) || [];
+  let body = document.getElementById("body");
+  body.innerHTML = "";
+
+  filtered.forEach((t,i)=>{
+
+    let group = "t_" + i;
+
+    body.innerHTML += `
+      <tr>
+        <td>${t.name}</td>
+
+        <td><input class="radio" type="radio" name="${group}" value="present"></td>
+        <td><input class="radio" type="radio" name="${group}" value="absent"></td>
+        <td><input class="radio" type="radio" name="${group}" value="leave"></td>
+      </tr>
+    `;
+  });
 }
 
-function saveAttendance(data){
-  localStorage.setItem("teacherMonthly", JSON.stringify(data));
-}
+// ==========================
+// SAVE (SAME STYLE AS STUDENTS)
+// ==========================
+function saveTeacherAttendance(){
 
-function saveAll(){
-  let data = getAttendance();
+  let date = document.getElementById("date").value;
 
-  teachers.forEach(t=>{
-    data.push({
-      id: Date.now()+t.id,
-      teacherId: t.id,
-      month: document.getElementById("month").value,
-      year: document.getElementById("year").value,
-      present: document.getElementById("p-"+t.id).value,
-      absent: document.getElementById("a-"+t.id).value,
-      leave: document.getElementById("l-"+t.id).value
+  let data = JSON.parse(localStorage.getItem("teacherAttendance")) || [];
+
+  teachers.forEach((t,i)=>{
+
+    let radios = document.getElementsByName("t_" + i);
+    let status = "";
+
+    radios.forEach(r=>{
+      if(r.checked) status = r.value;
     });
+
+    data.push({
+      date: date,
+      teacherId: t.id,
+      name: t.name,
+      status: status || "not-marked"
+    });
+
   });
 
-  saveAttendance(data);
+  localStorage.setItem("teacherAttendance", JSON.stringify(data));
 
-  alert("Attendance Saved");
-  window.location.href="view-teacher-attendance.html";
+  alert("Teacher Attendance Saved");
 }
+
 </script>
-<script src="voice-ai.js"></script>
+
 </body>
 </html>

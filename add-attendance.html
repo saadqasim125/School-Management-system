@@ -2,76 +2,175 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Add Attendance</title>
-
+<title>Daily Attendance</title>
 <link rel="stylesheet" href="attendance.css">
 </head>
 
 <body>
 
 <div class="header">
-<h1>Add Attendance</h1>
+  <h1>Daily Attendance</h1>
 
-<div>
-<button class="btn" onclick="window.location.href='view-attendance.html'">
-View Attendance
-</button>
+  <div>
+    <button class="btn" onclick="window.location.href='view-attendance.html'">
+      View Attendance
+    </button>
 
-<button class="btn add-btn" onclick="window.location.href='view-student.html'">
-View Students
-</button>
-</div>
+    <button class="btn add-btn" onclick="window.location.href='view-student.html'">
+      View Students
+    </button>
+  </div>
 </div>
 
 <div class="card">
 
-<div class="grid">
+  <div class="grid">
 
-<div class="group">
-<label>Class</label>
-<select id="classSelect" onchange="loadStudents()">
-<option value="">Select Class</option>
-<option>1</option><option>2</option><option>3</option>
-<option>4</option><option>5</option><option>6</option>
-<option>7</option><option>8</option><option>9</option><option>10</option>
-</select>
+    <!-- CLASS SELECT (NEW FIX) -->
+    <div class="group">
+      <label>Class</label>
+      <select id="classSelect" onchange="loadStudents()">
+        <option value="">Select Class</option>
+        <option value="1">Class 1</option>
+        <option value="2">Class 2</option>
+        <option value="3">Class 3</option>
+        <option value="4">Class 4</option>
+        <option value="5">Class 5</option>
+        <option value="6">Class 6</option>
+        <option value="7">Class 7</option>
+        <option value="8">Class 8</option>
+        <option value="9">Class 9</option>
+        <option value="10">Class 10</option>
+      </select>
+    </div>
+
+    <!-- DATE AUTO -->
+    <div class="group">
+      <label>Date</label>
+      <input type="date" id="date">
+    </div>
+
+    <!-- SEARCH -->
+    <div class="group full">
+      <input id="search" placeholder="Search student..." oninput="loadStudents()">
+    </div>
+
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Roll</th>
+        <th>Name</th>
+        <th>Present</th>
+        <th>Absent</th>
+        <th>Leave</th>
+      </tr>
+    </thead>
+
+    <tbody id="body"></tbody>
+  </table>
+
+  <button class="save" onclick="saveAttendance()">Save Attendance</button>
+
 </div>
 
-<div class="group">
-<label>Month</label>
-<select id="month">
-<option>January</option><option>February</option><option>March</option>
-<option>April</option><option>May</option><option>June</option>
-<option>July</option><option>August</option><option>September</option>
-<option>October</option><option>November</option><option>December</option>
-</select>
-</div>
+<script>
 
-<div class="group full">
-<input id="search" placeholder="Search student..." oninput="loadStudents()">
-</div>
+// ==========================
+// AUTO DATE
+// ==========================
+window.onload = () => {
+  document.getElementById("date").value =
+    new Date().toISOString().split("T")[0];
+};
 
-</div>
+// ==========================
+// LOAD STUDENTS BY CLASS
+// ==========================
+function loadStudents() {
 
-<table>
-<thead>
-<tr>
-<th>Roll</th>
-<th>Name</th>
-<th>Present</th>
-<th>Absent</th>
-<th>Leave</th>
-</tr>
-</thead>
+  const cls = document.getElementById("classSelect").value;
+  const search = document.getElementById("search").value.toLowerCase();
 
-<tbody id="body"></tbody>
-</table>
+  let students = JSON.parse(localStorage.getItem("students")) || [];
 
-<button class="save" onclick="saveAttendance()">Save Attendance</button>
+  // ❗ FILTER BY CLASS FIRST
+  let filtered = students.filter(s => {
+    return (!cls || s.class == cls) &&
+           s.name.toLowerCase().includes(search);
+  });
 
-</div>
+  const body = document.getElementById("body");
+  body.innerHTML = "";
 
-<script src="attendance.js"></script>
+  filtered.forEach((stu, index) => {
+
+    let groupName = "att_" + index;
+
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${stu.roll}</td>
+      <td>${stu.name}</td>
+
+      <td><input type="radio" name="${groupName}" value="present"></td>
+      <td><input type="radio" name="${groupName}" value="absent"></td>
+      <td><input type="radio" name="${groupName}" value="leave"></td>
+    `;
+
+    body.appendChild(row);
+  });
+}
+
+// ==========================
+// SAVE ATTENDANCE
+// ==========================
+function saveAttendance() {
+
+  const cls = document.getElementById("classSelect").value;
+  const date = document.getElementById("date").value;
+
+  if (!cls) {
+    alert("Please select class");
+    return;
+  }
+
+  let rows = document.querySelectorAll("#body tr");
+
+  let attendance = [];
+
+  rows.forEach((row, i) => {
+
+    let radios = document.getElementsByName("att_" + i);
+    let status = "";
+
+    radios.forEach(r => {
+      if (r.checked) status = r.value;
+    });
+
+    attendance.push({
+      roll: row.children[0].innerText,
+      name: row.children[1].innerText,
+      status: status || "not-marked"
+    });
+
+  });
+
+  let data = JSON.parse(localStorage.getItem("attendanceData")) || [];
+
+  data.push({
+    class: cls,
+    date: date,
+    attendance: attendance
+  });
+
+  localStorage.setItem("attendanceData", JSON.stringify(data));
+
+  alert("Attendance saved successfully!");
+}
+
+</script>
 <script src="voice-ai.js"></script>
 </body>
 </html>
