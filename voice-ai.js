@@ -1,39 +1,62 @@
 // ===============================
-// 🎤 STABLE VOICE NAVIGATION AI (FINAL FIXED)
+// 🎤 STABLE VOICE NAVIGATION AI (FULL FIXED VERSION)
 // ===============================
 
-let recognition;
+let recognition = null;
 let running = false;
+let isListening = false;
 
+// ===============================
+// START APP
 // ===============================
 window.onload = () => {
-  setTimeout(startAI, 800);
+  navigator.mediaDevices
+    .getUserMedia({ audio: true })
+    .then(() => {
+      setTimeout(startAI, 500);
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Microphone permission is required.");
+    });
 };
 
 // ===============================
+// INITIALIZE AI
+// ===============================
 function startAI() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
-    alert("Please use Google Chrome");
+    alert("Please use Google Chrome.");
     return;
   }
 
   recognition = new SpeechRecognition();
+
   recognition.lang = "en-US";
   recognition.continuous = false;
   recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
 
   running = true;
 
-  speak("Voice AI ready");
-
   setupListeners();
-  listen();
+
+  speak("Voice AI ready", () => {
+    listen();
+  });
 }
 
 // ===============================
+// SETUP EVENTS
+// ===============================
 function setupListeners() {
+  recognition.onstart = () => {
+    isListening = true;
+    console.log("🎤 Listening...");
+  };
 
   recognition.onresult = (event) => {
     const raw = event.results[0][0].transcript;
@@ -44,29 +67,55 @@ function setupListeners() {
     route(text);
   };
 
-  recognition.onerror = (e) => {
-    console.warn("Speech error:", e.error);
-    speak("Try again");
+  recognition.onerror = (event) => {
+    console.warn("Speech Error:", event.error);
+
+    isListening = false;
+
+    if (
+      event.error === "not-allowed" ||
+      event.error === "service-not-allowed"
+    ) {
+      alert("Microphone access denied.");
+      running = false;
+      return;
+    }
+
+    if (running) {
+      setTimeout(() => {
+        listen();
+      }, 1000);
+    }
   };
 
   recognition.onend = () => {
+    isListening = false;
+
+    console.log("🎤 Recognition Ended");
+
     if (running) {
       setTimeout(() => {
-        try { recognition.start(); } catch (e) {}
+        listen();
       }, 500);
     }
   };
 }
 
 // ===============================
+// START LISTENING
+// ===============================
 function listen() {
+  if (!running || isListening) return;
+
   try {
     recognition.start();
-  } catch (e) {}
+  } catch (err) {
+    console.error("Recognition Start Error:", err);
+  }
 }
 
 // ===============================
-// 🧼 CLEAN INPUT
+// CLEAN INPUT
 // ===============================
 function clean(text) {
   return text
@@ -77,92 +126,145 @@ function clean(text) {
 }
 
 // ===============================
-// 🧠 ROUTER (FIXED PRIORITY SYSTEM)
+// COMMAND ROUTER
 // ===============================
 function route(text) {
-
   console.log("COMMAND:", text);
 
-  // =================🔥 HIGHEST PRIORITY (ATTENDANCE ADD FIRST) =================
+  // ===============================
+  // ATTENDANCE
+  // ===============================
 
-  if (text.includes("add student attendance")) {
+  if (
+    text.includes("add") &&
+    text.includes("student") &&
+    text.includes("attendance")
+  ) {
     return go("add-attendance.html");
   }
 
-  if (text.includes("add teacher attendance")) {
+  if (
+    text.includes("add") &&
+    text.includes("teacher") &&
+    text.includes("attendance")
+  ) {
     return go("add-teacher-attendance.html");
   }
 
-  if (text.includes("student attendance")) {
+  if (
+    text.includes("student") &&
+    text.includes("attendance") &&
+    !text.includes("add")
+  ) {
     return go("view-attendance.html");
   }
 
-  if (text.includes("teacher attendance")) {
+  if (
+    text.includes("teacher") &&
+    text.includes("attendance") &&
+    !text.includes("add")
+  ) {
     return go("view-teacher-attendance.html");
   }
 
-  // ================= STUDENTS =================
+  // ===============================
+  // STUDENTS
+  // ===============================
 
-  if (text.includes("add student") && !text.includes("attendance")) {
+  if (
+    text.includes("add") &&
+    text.includes("student") &&
+    !text.includes("attendance")
+  ) {
     return go("add-student.html");
   }
 
-  if (text.includes("view student") || text.includes("students list")) {
+  if (
+    text.includes("view student") ||
+    text.includes("students list") ||
+    text.includes("student list")
+  ) {
     return go("view-student.html");
   }
 
-  // ================= TEACHERS =================
+  // ===============================
+  // TEACHERS
+  // ===============================
 
-  if (text.includes("add teacher") && !text.includes("attendance")) {
+  if (
+    text.includes("add") &&
+    text.includes("teacher") &&
+    !text.includes("attendance")
+  ) {
     return go("add-teacher.html");
   }
 
-  if (text.includes("view teacher") || text.includes("teachers list")) {
+  if (
+    text.includes("view teacher") ||
+    text.includes("teachers list") ||
+    text.includes("teacher list")
+  ) {
     return go("view-teachers.html");
   }
 
-  // ================= HOME =================
+  // ===============================
+  // HOME
+  // ===============================
 
-  if (text.includes("home") || text.includes("dashboard") || text.includes("index")) {
+  if (
+    text.includes("home") ||
+    text.includes("dashboard") ||
+    text.includes("index")
+  ) {
     return go("index.html");
   }
 
-  // ================= SMART FALLBACK =================
+  // ===============================
+  // UNKNOWN COMMAND
+  // ===============================
 
-  const pages = [
-    { key: "add student attendance", page: "add-attendance.html" },
-    { key: "add teacher attendance", page: "add-teacher-attendance.html" },
-    { key: "student attendance", page: "view-attendance.html" },
-    { key: "teacher attendance", page: "view-teacher-attendance.html" },
-    { key: "add student", page: "add-student.html" },
-    { key: "add teacher", page: "add-teacher.html" },
-    { key: "view student", page: "view-student.html" },
-    { key: "view teacher", page: "view-teachers.html" },
-    { key: "home", page: "index.html" }
-  ];
-
-  for (let i = 0; i < pages.length; i++) {
-    if (text.includes(pages[i].key)) {
-      return go(pages[i].page);
-    }
-  }
-
-  speak("Command not recognized");
+  speak("Command not recognized", () => {
+    listen();
+  });
 }
 
+// ===============================
+// PAGE NAVIGATION
 // ===============================
 function go(page) {
   running = false;
-  speak("Opening page");
-  setTimeout(() => {
+
+  if (recognition && isListening) {
+    try {
+      recognition.stop();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  speak("Opening page", () => {
     window.location.href = page;
-  }, 300);
+  });
 }
 
 // ===============================
-function speak(msg) {
-  const speech = new SpeechSynthesisUtterance(msg);
-  speech.lang = "en-US";
+// TEXT TO SPEECH
+// ===============================
+function speak(message, callback = null) {
   window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(speech);
+
+  const utterance = new SpeechSynthesisUtterance(message);
+
+  utterance.lang = "en-US";
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  utterance.onend = () => {
+    if (typeof callback === "function") {
+      callback();
+    }
+  };
+
+  window.speechSynthesis.speak(utterance);
 }
